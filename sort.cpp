@@ -6,21 +6,20 @@
 #include <time.h> 
 #include <random>
 
-using namespace std;
-unsigned int start = 0; //Начало массива
-unsigned int const size = 50; // Конец массива //Есть файлы для замены с 10/20/50/10000/20000/50000/100000 элементов
-unsigned int Array[size] = {}; //Массив
+using namespace std;                                //Пространстов имен
+unsigned int start = 0;                             //Начало массива
+unsigned int const size = 10000;                       //Конец массива //Есть файлы для замены с 20/50/10k/20k/50k/100k/200k элементов
+unsigned int Array[size] = {};                      //Массив
 
-void randomDigits()
+void randomDigits()                                 //Создание массива с случайными числами и его запись в файл
 {
-    unsigned int x = 200000;
+    unsigned int x = 200000;                        //Изменить размер массива!
     random_device rd;
     mt19937 mersenne(rd());
     unsigned int Array[x];
     unsigned int k = 0;
     bool flag = true;
     srand(time(NULL));
-    cout << endl << "Флаг 1";
     for (unsigned int i = 0; i < x; i++)
     {
         k = 1 + mersenne()%x;
@@ -43,8 +42,8 @@ void randomDigits()
             Array[i]=k;
         }
     } 
-    cout << endl << "Флаг 2";
-    ofstream outf("array1000000.txt");
+    string s_size = to_string(size);
+    ofstream outf("array"+s_size+".txt");
     for (unsigned int i=0; i<x; i++)
     {
         if (!outf)
@@ -58,10 +57,9 @@ void randomDigits()
     }  
 }
 
-//Функция чтения массива из файла
-void readFile() 
+void readFile()                                     //Чтение массива из файла
 {
-    string s_size = to_string(size);
+    string s_size = to_string(size);                //Принимает число из ряда выше для выбора файла массива!
     ifstream inf("array"+s_size+".txt");
     if (!inf)
     {
@@ -84,7 +82,23 @@ void readFile()
     }
     inf.close();
 }
-//закончили чтение
+
+void writeFile()
+{
+    string s_size = to_string(size);
+    ofstream outf("sortingarray"+s_size+".txt");
+    for (unsigned int i=0; i<size; i++)
+    {
+        if (!outf)
+        {
+           cout << "Ошибка записи в файл" << "\n";
+        }
+        else
+        {
+            outf << Array[i] << endl;
+        }
+    }  
+}
 
 //Функция сортировки (принимает указатель на массив, начальное и конечное значение)
 unsigned int Sort(unsigned int *arr, unsigned int begin, unsigned int end)
@@ -145,30 +159,31 @@ unsigned int Sort(unsigned int *arr, unsigned int begin, unsigned int end)
 int main()
 {
     //Читаем массив из файла
-    //readFile(); 
-
+    readFile(); 
     //Выводим массив
-    /*cout << endl << "Array: " << endl;
+    cout << endl << "Array: " << endl;
     for (unsigned int i = 0; i < size-start; i++)
     {
         cout << Array[i] << " ";
-    }*/
-    //Сортируем массив
-    clock_t begin = clock();//запускаем таймер
-    //Sort(Array, start, size);
-    cout << endl << "Флаг -1";
-    randomDigits();
-    clock_t end = clock();
-    double seconds = (double)(end - begin) / CLOCKS_PER_SEC;
+    }
 
+    //Сортируем массив
+    clock_t begin = clock();                                        //Запускаем таймер времени
+    Sort(Array, start, size);
+    //randomDigits();                                               //Набиваем массив числами
+    clock_t end = clock();                                          //Останавливаем таймер времени
+    double seconds = (double)(end - begin) / CLOCKS_PER_SEC;        //Считаем время выполнения сортировки
+    
     //Выводим отсортированный массив
-    /*cout << endl << "Sorted array:" << endl;
+    cout << endl << "Sorted array:" << endl;
     for (unsigned int i = start; i < size; i++)
     {
         cout << Array[i] << " ";
-    }*/
-    //cout << endl << "Время выполнения сортировки: " << seconds << endl;
-    cout << endl << "Время наполения массива: " << seconds << endl;
+    }
+
+    cout << endl << "Sort execution time: " << seconds << " c" << endl;
+    writeFile();
+    //cout << endl << "Время наполения массива: " << seconds << endl;
     //cin >> start ;
     return 0;
 }
